@@ -2,19 +2,35 @@
 import pygame as pg
 import random
 from settings import *
+from graphics import *
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game):
         pg.sprite.Sprite.__init__(self)
         self.game = game
-        self.image = pg.Surface((30,40))
-        self.image.fill(BLUE)
+        self.g = Graphics()
+        self.image = pg.Surface((70,70))
+        self.image = self.g.bird_anim[0]
+        self.frame = 0
+        self.frame_rate = 500
+        self.last_update = pg.time.get_ticks()
+        # self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH/2,HEIGHT/2)
 
     def update(self, x, y):
         self.rect.x = x
         self.rect.y = y
+        now = pg.time.get_ticks()
+        if now - self.last_update > self.frame_rate:
+            self.frame += 1
+            if self.frame == len(self.g.bird_anim):
+                self.frame = 0
+            else: 
+                center = self.rect.center
+                self.image = self.g.bird_anim[self.frame]
+                self.rect = self.image.get_rect()
+                self.rect.center = center
 
 
 class Mob(pg.sprite.Sprite):
